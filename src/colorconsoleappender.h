@@ -22,8 +22,8 @@
  *
  ******************************************************************************/
 
-#ifndef _COLORCONSOLEAPPENDER_H
-#define _COLORCONSOLEAPPENDER_H
+#ifndef LOG4QT_COLORCONSOLEAPPENDER_H
+#define  LOG4QT_COLORCONSOLEAPPENDER_H
 
 #include "consoleappender.h"
 
@@ -80,7 +80,7 @@ public:
 
     virtual void close() Q_DECL_OVERRIDE;
 protected:
-    virtual void append(const LoggingEvent& rEvent) Q_DECL_OVERRIDE;
+    virtual void append(const LoggingEvent &rEvent) Q_DECL_OVERRIDE;
 private:
     HANDLE hConsole;
 #endif
@@ -91,4 +91,4 @@ private:
 } // namespace Log4Qt
 
 
-#endif // #ifndef _COLORCONSOLEAPPENDER_H
+#endif // #ifndef  LOG4QT_COLORCONSOLEAPPENDER_H

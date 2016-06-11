@@ -52,11 +52,10 @@ private slots:
     void initTestCase();
     void cleanupTestCase();
 
-    // log4qt/
-    void DateTime_compability_data();
-    void DateTime_compability();
-    void DateTime_week_data();
-    void DateTime_week();
+    // log4qt
+    void DateTime_alternativelyFormat_data();
+    void DateTime_alternativelyFormat();
+
     void DateTime_milliseconds_data();
     void DateTime_milliseconds();
     void PatternFormatter_data();
@@ -108,9 +107,9 @@ private slots:
     void AppenderSkeleton_filter();
     void BasicConfigurator();
     void FileAppender();
-    //void DailyRollingFileAppender();
-    //void LoggingEvent_stream_data();
-    //void LoggingEvent_stream();
+    void DailyRollingFileAppender();
+    void LoggingEvent_stream_data();
+    void LoggingEvent_stream();
     void LogManager_configureLogLogger();
     void PropertyConfigurator_missing_appender();
     void PropertyConfigurator_unknown_appender_class();
@@ -126,7 +125,7 @@ private slots:
 private:
     QString dailyRollingFileAppenderSuffix(const QDateTime &rDateTime);
     QString enumValueToKey(QObject *pObject,
-                           const char* pEnumeration,
+                           const char *pEnumeration,
                            int value);
     void resetLogging();
     static bool compareStringLists(const QStringList &rActual,

@@ -16,16 +16,16 @@
 
 
 
-typedef HANDLE(WINAPI*PDeregisterEventSource)(HANDLE);
+typedef HANDLE(WINAPI *PDeregisterEventSource)(HANDLE);
 static PDeregisterEventSource pDeregisterEventSource = 0;
-typedef BOOL(WINAPI*PReportEvent)(HANDLE,WORD,WORD,DWORD,PSID,WORD,DWORD,LPCTSTR*,LPVOID);
+typedef BOOL(WINAPI *PReportEvent)(HANDLE, WORD, WORD, DWORD, PSID, WORD, DWORD, LPCTSTR *, LPVOID);
 static PReportEvent pReportEvent = 0;
-typedef HANDLE(WINAPI*PRegisterEventSource)(LPCTSTR,LPCTSTR);
+typedef HANDLE(WINAPI *PRegisterEventSource)(LPCTSTR, LPCTSTR);
 static PRegisterEventSource pRegisterEventSource = 0;
 
-#define RESOLVE(name) p##name = (P##name)lib.resolve(#name);
-#define RESOLVEA(name) p##name = (P##name)lib.resolve(#name"A");
-#define RESOLVEW(name) p##name = (P##name)lib.resolve(#name"W");
+#define RESOLVE(name) p##name = reinterpret_cast<P##name>(lib.resolve(#name));
+#define RESOLVEA(name) p##name = reinterpret_cast<P##name>(lib.resolve(#name"A"));
+#define RESOLVEW(name) p##name = reinterpret_cast<P##name>(lib.resolve(#name"W"));
 
 static bool winServiceInit()
 {
@@ -110,16 +110,17 @@ void SystemLogAppender::append(const LoggingEvent &rEvent)
         break;
     }
 
-    HANDLE h = pRegisterEventSource(0, (wchar_t *) serviceName().utf16());
+    HANDLE h = pRegisterEventSource(0, serviceName().toStdWString().c_str());
     if (h)
     {
         int id = 0;
         uint category = 0;
-        const wchar_t *msg = (wchar_t*) message.utf16();
+        auto msg = message.toStdWString();
+        const wchar_t *msg_wstr = msg.c_str();
         const char *bindata = 0;//data.size() ? data.constData() : 0;
         const int datasize = 0;
         pReportEvent(h, wType, category, id, 0, 1, datasize,
-                     (const wchar_t **) &msg, const_cast<char *> (bindata));
+                     &msg_wstr, const_cast<char *> (bindata));
         pDeregisterEventSource(h);
     }
 #else
@@ -141,7 +142,7 @@ void SystemLogAppender::append(const LoggingEvent &rEvent)
     }
 
     openlog(ident, LOG_PID, LOG_DAEMON);
-    for(const auto & line : message.split('\n', QString::SkipEmptyParts))
+    for (const auto &line : message.split('\n', QString::SkipEmptyParts))
         syslog(st, "%s", line.toLocal8Bit().constData());
     closelog();
 
@@ -153,7 +154,7 @@ QString SystemLogAppender::serviceName() const
     return mServiceName;
 }
 
-void SystemLogAppender::setServiceName(const QString& serviceName)
+void SystemLogAppender::setServiceName(const QString &serviceName)
 {
     mServiceName = serviceName;
 

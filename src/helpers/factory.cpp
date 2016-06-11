@@ -60,6 +60,9 @@
 #include "binaryfileappender.h"
 #include "rollingbinaryfileappender.h"
 #include "dailyfileappender.h"
+#ifdef Q_OS_WIN
+#include "wdcappender.h"
+#endif
 
 #include "varia/debugappender.h"
 #include "varia/denyallfilter.h"
@@ -162,10 +165,17 @@ Appender *create_rollingbinaryfile_appender()
     return new RollingBinaryFileAppender;
 }
 
-Appender * create_dailyrollingfile_appender()
+Appender *create_dailyrollingfile_appender()
 {
     return new DailyFileAppender;
 }
+
+#ifdef Q_OS_WIN
+Appender *create_wdc_appender()
+{
+    return new WDCAppender;
+}
+#endif
 
 // Filters
 
@@ -296,7 +306,7 @@ void Factory::doRegisterAppender(const QString &rAppenderClassName,
 {
     QMutexLocker locker(&mObjectGuard);
 
-    if(rAppenderClassName.isEmpty())
+    if (rAppenderClassName.isEmpty())
     {
         logger()->warn("Registering Appender factory function with empty class name");
         return;
@@ -310,7 +320,7 @@ void Factory::doRegisterFilter(const QString &rFilterClassName,
 {
     QMutexLocker locker(&mObjectGuard);
 
-    if(rFilterClassName.isEmpty())
+    if (rFilterClassName.isEmpty())
     {
         logger()->warn("Registering Filter factory function with empty class name");
         return;
@@ -324,7 +334,7 @@ void Factory::doRegisterLayout(const QString &rLayoutClassName,
 {
     QMutexLocker locker(&mObjectGuard);
 
-    if(rLayoutClassName.isEmpty())
+    if (rLayoutClassName.isEmpty())
     {
         logger()->warn("Registering Layout factory function with empty class name");
         return;
@@ -473,6 +483,10 @@ void Factory::registerDefaultAppenders()
 
     mAppenderRegistry.insert(QLatin1String("org.apache.log4j.DailyFileAppender"), create_dailyrollingfile_appender);
     mAppenderRegistry.insert(QLatin1String("Log4Qt::DailyFileAppender"), create_dailyrollingfile_appender);
+#ifdef Q_OS_WIN
+    mAppenderRegistry.insert(QLatin1String("org.apache.log4j.WDCAppender"), create_wdc_appender);
+    mAppenderRegistry.insert(QLatin1String("Log4Qt::WDCAppender"), create_wdc_appender);
+#endif
 }
 
 

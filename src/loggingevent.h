@@ -101,10 +101,10 @@ private:
 
 #ifndef QT_NO_DATASTREAM
     // Needs to be friend to stream objects
-    friend QDataStream &operator<<(QDataStream &rStream,
-                                   const LoggingEvent &rLoggingEvent);
-    friend QDataStream &operator>>(QDataStream &rStream,
-                                   LoggingEvent &rLoggingEvent);
+    friend LOG4QT_EXPORT QDataStream &operator<<(QDataStream &rStream,
+            const LoggingEvent &rLoggingEvent);
+    friend LOG4QT_EXPORT QDataStream &operator>>(QDataStream &rStream,
+            LoggingEvent &rLoggingEvent);
 #endif // QT_NO_DATASTREAM
 };
 
@@ -115,8 +115,8 @@ private:
  * Writes the given error \a rLoggingEvent to the given stream \a rStream,
  * and returns a reference to the stream.
  */
-QDataStream &operator<<(QDataStream &rStream,
-                        const LoggingEvent &rLoggingEvent);
+LOG4QT_EXPORT QDataStream &operator<<(QDataStream &rStream,
+                                      const LoggingEvent &rLoggingEvent);
 
 /*!
  * \relates LoggingEvent
@@ -124,8 +124,8 @@ QDataStream &operator<<(QDataStream &rStream,
  * Reads an error from the given stream \a rStream into the given
  * error \a rLoggingEvent, and returns a reference to the stream.
  */
-QDataStream &operator>>(QDataStream &rStream,
-                        LoggingEvent &rLoggingEvent);
+LOG4QT_EXPORT QDataStream &operator>>(QDataStream &rStream,
+                                      LoggingEvent &rLoggingEvent);
 #endif // QT_NO_DATASTREAM
 
 #ifndef QT_NO_DEBUG_STREAM
